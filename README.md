@@ -19,5 +19,5 @@
 
 ### Login with
 
-    email: student
+    email: student1@example.com
     password: 123
