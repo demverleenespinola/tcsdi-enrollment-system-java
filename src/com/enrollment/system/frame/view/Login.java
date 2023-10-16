@@ -187,7 +187,7 @@ public class Login extends JFrame {
 //		                	System.out.println("admin");
 		                	dispose();
 		    				AdminDashboard adminDashboard = new AdminDashboard();
-		    				adminDashboard.processData(accountID); 
+//		    				adminDashboard.processData(accountID); 
 		    				adminDashboard.setVisible(true);
 		                }else if(resultSet.getInt("account_descriptionID") == 02) {
 //		                	System.out.println("student");
@@ -203,7 +203,7 @@ public class Login extends JFrame {
 		                System.out.println("Invalid login credentials");
 		                JOptionPane.showMessageDialog(null, "Invalid login credentials");
 		            }
-		        } catch (SQLException e1) {
+		        } catch (Exception e1) {
 		            e1.printStackTrace();
 		        }
 			connector.closeConnection();

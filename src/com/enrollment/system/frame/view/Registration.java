@@ -147,98 +147,101 @@ public class Registration extends JFrame {
 		panelForm1.add(textFieldStudentEmailAddress);
 		textFieldStudentEmailAddress.setColumns(10);
 		
-				textFieldStudentMiddleName = new JTextField();
-				textFieldStudentMiddleName.setBounds(10, 141, 344, 20);
-				panelForm1.add(textFieldStudentMiddleName);
-				textFieldStudentMiddleName.setBorder(null);
-				textFieldStudentMiddleName.setForeground(new Color(0, 0, 0));
-				textFieldStudentMiddleName.setFont(new Font("Tahoma", Font.PLAIN, 12));
-				textFieldStudentMiddleName.setColumns(10);
+		textFieldStudentMiddleName = new JTextField();
+		textFieldStudentMiddleName.setBounds(10, 141, 344, 20);
+		panelForm1.add(textFieldStudentMiddleName);
+		textFieldStudentMiddleName.setBorder(null);
+		textFieldStudentMiddleName.setForeground(new Color(0, 0, 0));
+		textFieldStudentMiddleName.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		textFieldStudentMiddleName.setColumns(10);
+		
+		lblStudentMiddleName = new JLabel("Student Middle Name");
+		lblStudentMiddleName.setBounds(10, 116, 344, 14);
+		panelForm1.add(lblStudentMiddleName);
+		lblStudentMiddleName.setForeground(new Color(255, 255, 255));
+		lblStudentMiddleName.setFont(new Font("Tahoma", Font.PLAIN, 12));
 				
-						lblStudentMiddleName = new JLabel("Student Middle Name");
-						lblStudentMiddleName.setBounds(10, 116, 344, 14);
-						panelForm1.add(lblStudentMiddleName);
-						lblStudentMiddleName.setForeground(new Color(255, 255, 255));
-						lblStudentMiddleName.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblStudentPassword = new JLabel("Password");
+		lblStudentPassword.setBounds(10, 284, 344, 14);
+		panelForm1.add(lblStudentPassword);
+		lblStudentPassword.setForeground(Color.WHITE);
+		lblStudentPassword.setFont(new Font("Tahoma", Font.PLAIN, 12));		
 						
-								lblStudentPassword = new JLabel("Password");
-								lblStudentPassword.setBounds(10, 284, 344, 14);
-								panelForm1.add(lblStudentPassword);
-								lblStudentPassword.setForeground(Color.WHITE);
-								lblStudentPassword.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		passwordFieldUserPassword = new JPasswordField();
+		passwordFieldUserPassword.setBounds(10, 309, 344, 20);
+		panelForm1.add(passwordFieldUserPassword);
+		passwordFieldUserPassword.setForeground(Color.BLACK);
+		passwordFieldUserPassword.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		passwordFieldUserPassword.setColumns(10);
+		passwordFieldUserPassword.setBorder(null);				
 								
-										passwordFieldUserPassword = new JPasswordField();
-										passwordFieldUserPassword.setBounds(10, 309, 344, 20);
-										panelForm1.add(passwordFieldUserPassword);
-										passwordFieldUserPassword.setForeground(Color.BLACK);
-										passwordFieldUserPassword.setFont(new Font("Tahoma", Font.PLAIN, 12));
-										passwordFieldUserPassword.setColumns(10);
-										passwordFieldUserPassword.setBorder(null);
-										
-										btnStudentSignUp = new JButton("Sign Up");
-										btnStudentSignUp.addActionListener(new ActionListener() {
-											public void actionPerformed(ActionEvent e) {
-												char[] password = passwordFieldUserPassword.getPassword();
-//												char[] confirmPassword = passwordFieldUserConfirmPassword.getPassword();
+		btnStudentSignUp = new JButton("Sign Up");
+		btnStudentSignUp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				char[] password = passwordFieldUserPassword.getPassword();
+//				char[] confirmPassword = passwordFieldUserConfirmPassword.getPassword();
 
-//												if (isAnyFieldBlank(textFieldStudentFirstName, textFieldStudentContactNumber,
-//														textFieldStudentEmailAddress, textFieldStudentFirstName, textFieldStudentLastName,
-//														textFieldStudentMiddleName, passwordFieldUserPassword, passwordFieldUserConfirmPassword)
-//														|| isDateChooserBlank(dateChooserStudentBirthDate)) {
-												
-												if (isAnyFieldBlank(textFieldStudentEmailAddress, textFieldStudentFirstName, textFieldStudentLastName,
-														textFieldStudentMiddleName, passwordFieldUserPassword)) {
-													JOptionPane.showMessageDialog(null,
-															"Error: Some fields are blank. Please fill in all the required fields.");
-												} else {
-													// Passwords match, proceed with the sign-up process.
-													// Replace this with your actual sign-up logic.
-													
-													String url = "jdbc:mysql://localhost:3306/enrollmentsystemdb";
-									                String username = "root";
-									                String pass = "";
+//				if (isAnyFieldBlank(textFieldStudentFirstName, textFieldStudentContactNumber,
+//						textFieldStudentEmailAddress, textFieldStudentFirstName, textFieldStudentLastName,
+//						textFieldStudentMiddleName, passwordFieldUserPassword, passwordFieldUserConfirmPassword)
+//						|| isDateChooserBlank(dateChooserStudentBirthDate)) {
+				
+				if (isAnyFieldBlank(textFieldStudentEmailAddress, textFieldStudentFirstName, textFieldStudentLastName,
+						textFieldStudentMiddleName, passwordFieldUserPassword)) {
+					JOptionPane.showMessageDialog(null,
+							"Error: Some fields are blank. Please fill in all the required fields.");
+				} else {
+					// Passwords match, proceed with the sign-up process.
+					// Replace this with your actual sign-up logic.
+					
+					String url = "jdbc:mysql://localhost:3306/enrollmentsystemdb";
+	                String username = "root";
+	                String pass = "";
 
-									                try {
-									                    Connection connection = DriverManager.getConnection(url, username, pass);
-									                    String query = "INSERT INTO tbl_accounts (account_givenname,account_middlename,account_lastname,account_emailAddress,account_password) VALUES (?,?,?,?,?) ";
-									                    PreparedStatement preparedStatement = connection.prepareStatement(query);
-									                    preparedStatement.setString(1, textFieldStudentFirstName.getText());
-									                    preparedStatement.setString(2, textFieldStudentMiddleName.getText());
-									                    preparedStatement.setString(3, textFieldStudentLastName.getText());
-									                    preparedStatement.setString(4, textFieldStudentEmailAddress.getText());
-									                    preparedStatement.setString(5, new String(passwordFieldUserPassword.getPassword()));
-//									                    preparedStatement.setString(6, new String(passwordFieldUserConfirmPassword.getPassword()));
-									                    preparedStatement.executeUpdate();
-									                    System.out.println("Data inserted successfully.");
-									                    connection.close();
-									                } catch (SQLException ex) {
-									                    ex.printStackTrace();
-									                }
+	                try {
+	                    Connection connection = DriverManager.getConnection(url, username, pass);
+	                    String query = "INSERT INTO tbl_accounts (account_givenname,account_middlename,account_lastname,account_emailAddress,account_password) VALUES (?,?,?,?,?) ";
+	                    PreparedStatement preparedStatement = connection.prepareStatement(query);
+	                    preparedStatement.setString(1, textFieldStudentFirstName.getText());
+	                    preparedStatement.setString(2, textFieldStudentMiddleName.getText());
+	                    preparedStatement.setString(3, textFieldStudentLastName.getText());
+	                    preparedStatement.setString(4, textFieldStudentEmailAddress.getText());
+	                    preparedStatement.setString(5, new String(passwordFieldUserPassword.getPassword()));
+//	                    preparedStatement.setString(6, new String(passwordFieldUserConfirmPassword.getPassword()));
+	                    preparedStatement.executeUpdate();
+	                    System.out.println("Data inserted successfully.");
+	                    connection.close();
+	                } catch (SQLException ex) {
+	                    ex.printStackTrace();
+	                }
 
-													dispose();
-													Login loginFrame = new Login();
-													loginFrame.setVisible(true);
-													
-//													frame.add(textField);
-												}	
-											}
-										});
-										btnStudentSignUp.setFont(new Font("Tahoma", Font.PLAIN, 12));
-										btnStudentSignUp.setFocusable(false);
-										btnStudentSignUp.setBorder(new SoftBevelBorder(BevelBorder.RAISED, null, null, null, null));
-										btnStudentSignUp.setBackground(Color.YELLOW);
-										btnStudentSignUp.setBounds(254, 423, 100, 21);
-										panelForm1.add(btnStudentSignUp);
+					dispose();
+					Login loginFrame = new Login();
+					loginFrame.setVisible(true);
+					
+//					frame.add(textField);
+				}	
+			}
+		});
+		btnStudentSignUp.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		btnStudentSignUp.setFocusable(false);
+		btnStudentSignUp.setBorder(new SoftBevelBorder(BevelBorder.RAISED, null, null, null, null));
+		btnStudentSignUp.setBackground(Color.YELLOW);
+		btnStudentSignUp.setBounds(254, 423, 100, 21);
+		panelForm1.add(btnStudentSignUp);
+		
+		
+		
+		btnBack = new JButton("Back");
+		btnBack.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		btnBack.setFocusable(false);
+		btnBack.setBorder(new SoftBevelBorder(BevelBorder.RAISED, null, null, null, null));
+		btnBack.setBackground(Color.YELLOW);
+		btnBack.setBounds(10, 423, 100, 21);
+		panelForm1.add(btnBack);						
 										
 										
 										
-										btnBack = new JButton("Back");
-										btnBack.setFont(new Font("Tahoma", Font.PLAIN, 12));
-										btnBack.setFocusable(false);
-										btnBack.setBorder(new SoftBevelBorder(BevelBorder.RAISED, null, null, null, null));
-										btnBack.setBackground(Color.YELLOW);
-										btnBack.setBounds(10, 423, 100, 21);
-										panelForm1.add(btnBack);
 	}
 
 	/**
