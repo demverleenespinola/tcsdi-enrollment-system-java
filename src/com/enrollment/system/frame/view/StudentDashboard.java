@@ -10,8 +10,11 @@ import com.enrollment.system.pane.view.StudentDashboardAdmission;
 import com.enrollment.system.pane.view.StudentDashboardOverview;
 import com.formdev.flatlaf.FlatLightLaf;
 
+import Database.enrollmentDatabase;
+
 import java.awt.Color;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import javax.imageio.ImageIO;
@@ -20,6 +23,9 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 
 public class StudentDashboard extends JFrame {
@@ -37,11 +43,48 @@ public class StudentDashboard extends JFrame {
 	private JPanel panelSidebar;
 	private StudentDashboardOverview panelOverview;
 	private StudentDashboardAdmission paneAdmission;
-
+	
+	//variable
+	String email;
+	String givenname,middlename,lastname,fullname;
+	
+	public void processData(int accountID) {
+        // Process the accountID as needed
+//        System.out.println("Processing account ID: " + accountID);
+        // Your other processing logic here
+        String url = "jdbc:mysql://localhost:3306/enrollmentsystemdb";
+	    String username = "root";
+	    String password = "";
+	    enrollmentDatabase connector = new enrollmentDatabase(url, username, password);
+	    connector.connect();
+        try {
+            String query = "SELECT * FROM tbl_student_information as tbl1 LEFT JOIN tbl_accounts as tbl2 ON tbl1.accountID = tbl2.accountID WHERE tbl1.accountID = ?";
+            PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query);
+            preparedStatement.setInt(1,accountID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                // Access the resultSet data as needed
+//               DISPLAY DATA ON LABELS
+            	email = resultSet.getString("account_emailAddress");
+            	givenname = resultSet.getString("givenName");
+            	middlename = resultSet.getString("middleName");
+            	lastname = resultSet.getString("lastname");
+            	fullname = givenname+" "+middlename+" "+lastname;
+            			
+            	lblEmailAddress.setText(email);
+            	lblFullName.setText(fullname);
+            }
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        }
+	connector.closeConnection();
+    }
 	/**
 	 * Create the frame.
 	 */
+//	private enrollmentDatabase connector;
 	public StudentDashboard() {
+		 System.out.println(email);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0, 0, 1100, 680);
 		setLocationRelativeTo(null);
@@ -70,14 +113,17 @@ public class StudentDashboard extends JFrame {
 		panelSidebar.add(panelUserInfo);
 		panelUserInfo.setLayout(null);
 		
-		lblFullName = new JLabel("Juan Dela Cruz");
+		lblFullName = new JLabel();
 		lblFullName.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lblFullName.setForeground(new Color(255, 255, 255));
 		lblFullName.setHorizontalAlignment(SwingConstants.CENTER);
 		lblFullName.setBounds(0, 11, 180, 14);
 		panelUserInfo.add(lblFullName);
 		
-		lblEmailAddress = new JLabel("juandelacruz@gmail.com");
+		
+		
+		
+		lblEmailAddress = new JLabel();
 		lblEmailAddress.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lblEmailAddress.setForeground(new Color(255, 255, 255));
 		lblEmailAddress.setHorizontalAlignment(SwingConstants.CENTER);
