@@ -14,14 +14,23 @@ import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
+
+import Database.enrollmentDatabase;
+
 import javax.swing.JPasswordField;
 
 public class Login extends JFrame {
@@ -39,10 +48,33 @@ public class Login extends JFrame {
 	private JPanel panelSignInLogo;
 	private JTextField textFieldUserEmailAddress;
 	private JPasswordField passwordField;
+//    Statement statement = null;
 
 	/**
 	 * Create the panel.
 	 */
+	private Connection connection;
+    private String url;
+    private String username;
+    private String password;
+
+    public Login(String url, String username, String password) {
+        this.url = url;
+        this.username = username;
+        this.password = password;
+        connect();
+    }
+    private void connect() {
+        try {
+            this.connection = DriverManager.getConnection(this.url, this.username, this.password);
+            if (this.connection != null) {
+                System.out.println("Connected to the database.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 	
 	public Login() {
 		setBackground(new Color(0, 128, 192));
@@ -111,7 +143,7 @@ public class Login extends JFrame {
 		textFieldUserEmailAddress = new JTextField();
 		textFieldUserEmailAddress.setBounds(45, 107, 265, 23);
 		panelInnerForm.add(textFieldUserEmailAddress);
-		textFieldUserEmailAddress.setText("student1@example.com");
+		textFieldUserEmailAddress.setText("");
 		textFieldUserEmailAddress.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		textFieldUserEmailAddress.setColumns(10);
 
@@ -131,23 +163,35 @@ public class Login extends JFrame {
 		btnLogin = new JButton("Sign in");
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String emailCredential = "student1@example.com";
-				String passwordCredential = "123";
-				
 				String email = textFieldUserEmailAddress.getText();
-                String password = new String(passwordField.getPassword());
-
-                if (email.isEmpty() && password.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Error login: Email and password cannot be blank");
-                } else if (email.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Error login: Email cannot be blank");
-                } else if (password.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Error login: Password cannot be blank");
-                } else if (email.equals(emailCredential) && password.equals(passwordCredential)) {
-                	dispose();
-    				StudentDashboard studentDashboardFrame = new StudentDashboard();
-    				studentDashboardFrame.setVisible(true);
-                }
+                String passwords = new String(passwordField.getPassword());
+                
+				String url = "jdbc:mysql://localhost:3306/enrollmentsystemdb";
+			    String username = "root";
+			    String password = "";
+			    enrollmentDatabase connector = new enrollmentDatabase(url, username, password);
+			    connector.connect();
+				try {
+		            String query = "SELECT * FROM tbl_accounts WHERE account_emailAddress = ?  AND account_password = ?";
+		            PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query);
+		            preparedStatement.setString(1, email);
+		            preparedStatement.setString(2, passwords);
+		            ResultSet resultSet = preparedStatement.executeQuery();
+		            if (resultSet.next()) {
+		                // The query returned a result, indicating successful login
+		                System.out.println("Login successful");
+		                dispose();
+	    				StudentDashboard studentDashboardFrame = new StudentDashboard();
+	    				studentDashboardFrame.setVisible(true);
+		            } else {
+		                // The query didn't return any results, indicating invalid login credentials
+		                System.out.println("Invalid login credentials");
+		                JOptionPane.showMessageDialog(null, "Invalid login credentials");
+		            }
+		        } catch (SQLException e1) {
+		            e1.printStackTrace();
+		        }
+			connector.closeConnection();
 
 			}
 		});
