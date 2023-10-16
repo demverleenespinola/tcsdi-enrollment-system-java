@@ -114,6 +114,7 @@ public class Login extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				dispose();
 				Registration registrationFrame = new Registration();
+//				getDataForComboBox registrationFrame = new getDataForComboBox();
 				registrationFrame.setVisible(true);
 			}
 		});
@@ -162,7 +163,7 @@ public class Login extends JFrame {
 
 		btnLogin = new JButton("Sign in");
 		btnLogin.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public  void actionPerformed(ActionEvent e) {
 				String email = textFieldUserEmailAddress.getText();
                 String passwords = new String(passwordField.getPassword());
                 
@@ -171,8 +172,9 @@ public class Login extends JFrame {
 			    String password = "";
 			    enrollmentDatabase connector = new enrollmentDatabase(url, username, password);
 			    connector.connect();
+			    int accountID = -1;
 				try {
-		            String query = "SELECT * FROM tbl_accounts WHERE account_emailAddress = ?  AND account_password = ?";
+		            String query = "SELECT * FROM tbl_accounts as tbl1 LEFT JOIN tbl_account_description as tbl2 ON tbl1.account_descriptionID = tbl2.account_descriptionID WHERE account_emailAddress = ?  AND account_password = ?";
 		            PreparedStatement preparedStatement = connector.getConnection().prepareStatement(query);
 		            preparedStatement.setString(1, email);
 		            preparedStatement.setString(2, passwords);
@@ -180,9 +182,22 @@ public class Login extends JFrame {
 		            if (resultSet.next()) {
 		                // The query returned a result, indicating successful login
 		                System.out.println("Login successful");
-		                dispose();
-	    				StudentDashboard studentDashboardFrame = new StudentDashboard();
-	    				studentDashboardFrame.setVisible(true);
+		                accountID = resultSet.getInt("accountID");
+		                if(resultSet.getInt("account_descriptionID") == 01) {
+//		                	System.out.println("admin");
+		                	dispose();
+		    				AdminDashboard adminDashboard = new AdminDashboard();
+		    				adminDashboard.processData(accountID); 
+		    				adminDashboard.setVisible(true);
+		                }else if(resultSet.getInt("account_descriptionID") == 02) {
+//		                	System.out.println("student");
+		                	dispose();
+		    				StudentDashboard studentDashboardFrame = new StudentDashboard();
+		    				studentDashboardFrame.processData(accountID); 
+		    				studentDashboardFrame.setVisible(true);
+		                }
+		                
+	    				
 		            } else {
 		                // The query didn't return any results, indicating invalid login credentials
 		                System.out.println("Invalid login credentials");
@@ -192,7 +207,7 @@ public class Login extends JFrame {
 		            e1.printStackTrace();
 		        }
 			connector.closeConnection();
-
+			
 			}
 		});
 		btnLogin.setFont(new Font("Tahoma", Font.PLAIN, 12));
